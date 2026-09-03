@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Printing & Laser Engraving Job Costing Tool</title>
+    
+    <style>
+        :root{--primary:#2563eb;--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#cbd5e1;--green-bg:#ecfdf5;--green:#059669;--radius:8px;}
+        *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;}
+        body{background:var(--bg);color:var(--text);line-height:1.5;padding-bottom:100px;}
+        .container{max-width:1200px;margin:0 auto;padding:0 16px;}
+        header{background:#0f172a;color:#fff;padding:20px 0;}
+        header h1{font-size:1.8rem;margin-bottom:4px;}
+        header p{color:#94a3b8;font-size:.9rem;}
+        
+        /* Adsterra Optimized Ad Containers */
+        .ad-wrap{margin:16px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+        .ad-lbl{font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;letter-spacing:0.05em;}
+        .ad-box{background:#f8fafc;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;border-radius:var(--radius);text-align:center;padding:4px;overflow:hidden;}
+        
+        .ad-leaderboard{width:100%;max-width:728px;min-height:90px;}
+        .ad-rectangle{width:100%;max-width:300px;min-height:250px;}
+        .ad-infeed{width:100%;min-height:90px;}
+        
+        .ad-sticky-footer{position:fixed;bottom:0;left:0;right:0;background:#ffffff;border-top:1px solid var(--border);box-shadow:0 -2px 10px rgba(0,0,0,0.1);z-index:998;padding:6px 16px;display:flex;flex-direction:column;align-items:center;}
+        .ad-sticky-footer .ad-box{width:100%;max-width:728px;height:50px;min-height:50px;border:none;}
+
+        .tab-container{display:flex;background:#e2e8f0;padding:4px;border-radius:var(--radius);margin:20px 0;}
+        .tab-btn{flex:1;padding:12px 16px;border:none;background:transparent;font-size:1rem;font-weight:700;color:var(--muted);cursor:pointer;border-radius:6px;transition:all 0.2s;}
+        .tab-btn.active{background:#ffffff!important;color:var(--primary)!important;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+        
+        .app-grid{display:grid;grid-template-columns:1fr;gap:24px;}
+        @media(min-width:850px){.app-grid{grid-template-columns:1fr 340px;}}
+        .card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin-bottom:20px;}
+        .fieldset{border:1px solid #e2e8f0;border-radius:var(--radius);padding:14px 16px 16px;margin-bottom:16px;background:#fafafa;}
+        .fieldset legend{font-weight:700;font-size:.85rem;color:var(--primary);padding:0 6px;text-transform:uppercase;}
+        .form-row{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px;}
+        @media(min-width:550px){.form-row.two-col{grid-template-columns:1fr 1fr;}.form-row.three-col{grid-template-columns:1fr 1fr 1fr;}}
+        .input-group{display:flex;flex-direction:column;}
+        .input-group label{font-size:.8rem;font-weight:600;margin-bottom:4px;}
+        .input-wrapper{position:relative;display:flex;align-items:center;}
+        .input-prefix,.input-suffix{position:absolute;color:var(--muted);font-size:.85rem;pointer-events:none;}
+        .input-prefix{left:10px;}.input-suffix{right:10px;}
+        .input-wrapper input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:.9rem;}
+        .has-prefix input{padding-left:24px;}.has-suffix input{padding-right:42px;}
+        
+        .sidebar-sticky{position:sticky;top:20px;}
+        .summary-card{background:#fff;border:2px solid var(--primary);border-radius:var(--radius);padding:20px;}
+        .summary-card h2{font-size:1.2rem;margin-bottom:12px;border-bottom:2px solid var(--bg);padding-bottom:6px;}
+        .summary-line{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px;color:var(--muted);}
+        .summary-line span:last-child{font-weight:600;color:var(--text);}
+        .summary-line.subtotal{border-top:1px dashed var(--border);padding-top:6px;margin-top:6px;font-weight:600;color:var(--text);}
+        .quote-total-box{background:var(--green-bg);border:1px solid #a7f3d0;border-radius:var(--radius);padding:12px;text-align:center;margin:16px 0;}
+        .quote-total-box .label{font-size:.75rem;text-transform:uppercase;font-weight:700;color:var(--green);}
+        .quote-total-box .price{font-size:1.8rem;font-weight:800;color:#065f46;}
+        .btn{display:inline-block;width:100%;padding:10px 14px;border:none;border-radius:6px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;}
+        .btn-primary{background:var(--primary);color:#fff;}
+        
+        .content-section{background:#fff;border-radius:var(--radius);padding:24px;margin:24px 0;border:1px solid var(--border);}
+        .content-section h2{font-size:1.3rem;margin-bottom:12px;}
+        .content-section h3{font-size:1.05rem;margin:16px 0 8px;}
+        .content-section p{margin-bottom:12px;color:#334155;font-size:.9rem;}
+        
+        footer{background:#0f172a;color:#94a3b8;padding:24px 0;text-align:center;font-size:.8rem;margin-top:32px;}
+        .footer-links{display:flex;justify-content:center;gap:16px;margin-bottom:12px;}
+        .footer-links a{color:#cbd5e1;cursor:pointer;}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);z-index:1000;justify-content:center;align-items:center;padding:16px;}
+        .modal-card{background:#fff;border-radius:var(--radius);max-width:550px;width:100%;max-height:80vh;overflow-y:auto;padding:20px;position:relative;}
+        .close-btn{position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);}
+        .cookie-banner{position:fixed;bottom:68px;left:16px;right:16px;max-width:400px;background:#0f172a;color:#fff;padding:12px 16px;border-radius:var(--radius);z-index:999;display:flex;flex-direction:column;gap:8px;font-size:.8rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        .cookie-btn{background:var(--primary);color:#fff;border:none;padding:6px 12px;border-radius:4px;font-weight:600;cursor:pointer;align-self:flex-end;}
+        .hidden{display:none!important;}
+    </style>
+    <script>
+        window.currentTab = '3d';
+
+        window.switchTab = function(tab) {
+            window.currentTab = tab;
+            var btn3d = document.getElementById('tab-3d-btn');
+            var btnLaser = document.getElementById('tab-laser-btn');
+            var form3d = document.getElementById('form-3d');
+            var formLaser = document.getElementById('form-laser');
+
+            if (tab === '3d') {
+                if(btn3d) btn3d.className = 'tab-btn active';
+                if(btnLaser) btnLaser.className = 'tab-btn';
+                if(form3d) form3d.className = '';
+                if(formLaser) formLaser.className = 'hidden';
+            } else {
+                if(btnLaser) btnLaser.className = 'tab-btn active';
+                if(btn3d) btn3d.className = 'tab-btn';
+                if(formLaser) formLaser.className = '';
+                if(form3d) form3d.className = 'hidden';
+            }
+            window.calculateCosts();
+        };
+
+        window.openModal = function(id) {
+            var modal = document.getElementById(id);
+            if(modal) modal.style.display = 'flex';
+        };
+
+        window.closeModal = function(id) {
+            var modal = document.getElementById(id);
+            if(modal) modal.style.display = 'none';
+        };
+
+        function getNum(id) {
+            var el = document.getElementById(id);
+            if(!el) return 0;
+            var val = parseFloat(el.value);
+            return isNaN(val) ? 0 : val;
+        }
+
+        function fmt(val) { return '$' + val.toFixed(2); }
+
+        function updateUI(mat, energy, wear, labor, hw, direct, risk, total, profit, tax, final) {
+            document.getElementById('res-material').innerText = fmt(mat);
+            document.getElementById('res-energy').innerText = fmt(energy);
+            document.getElementById('res-wear').innerText = fmt(wear);
+            document.getElementById('res-labor').innerText = fmt(labor);
+            document.getElementById('res-hardware').innerText = fmt(hw);
+            document.getElementById('res-direct-sub').innerText = fmt(direct);
+            document.getElementById('res-risk').innerText = fmt(risk);
+            document.getElementById('res-total-cost').innerText = fmt(total);
+            document.getElementById('res-profit').innerText = fmt(profit);
+            document.getElementById('res-tax').innerText = fmt(tax);
+            document.getElementById('res-final-quote').innerText = fmt(final);
+        }
+
+        window.calculateCosts = function() {
+            if (window.currentTab === '3d') {
+                var spoolCost = getNum('p-spool-cost'), spoolWeight = getNum('p-spool-weight'), usedWeight = getNum('p-used-weight');
+                var powerWatts = getNum('p-power'), elecRate = getNum('p-elec-rate'), wearRate = getNum('p-wear-rate');
+                var hours = getNum('p-time-hours'), mins = getNum('p-time-mins'), laborMins = getNum('p-labor-time'), laborRate = getNum('p-labor-rate');
+                var hardware = getNum('p-hardware-cost'), failurePercent = getNum('p-failure-rate'), markupPercent = getNum('p-markup'), taxPercent = getNum('p-tax-rate');
+
+                var matCost = spoolWeight > 0 ? (usedWeight / spoolWeight) * spoolCost : 0;
+                var totalPrintHours = hours + (mins / 60);
+                var energyCost = (powerWatts / 1000) * totalPrintHours * elecRate;
+                var wearCost = totalPrintHours * wearRate;
+                var laborCost = (laborMins / 60) * laborRate;
+                var directSubtotal = matCost + energyCost + wearCost + laborCost + hardware;
+                var riskCost = directSubtotal * (failurePercent / 100);
+                var totalShopCost = directSubtotal + riskCost;
+                var profitAmt = totalShopCost * (markupPercent / 100);
+                var subtotalBeforeTax = totalShopCost + profitAmt;
+                var taxAmt = subtotalBeforeTax * (taxPercent / 100);
+
+                updateUI(matCost, energyCost, wearCost, laborCost, hardware, directSubtotal, riskCost, totalShopCost, profitAmt, taxAmt, subtotalBeforeTax + taxAmt);
+            } else {
+                var sheetCost = getNum('l-sheet-cost'), totalArea = getNum('l-total-area'), usedArea = getNum('l-used-area');
+                var powerWatts = getNum('l-power'), elecRate = getNum('l-elec-rate'), wearRate = getNum('l-wear-rate');
+                var runMins = getNum('l-run-time'), setupMins = getNum('l-setup-time'), laborRate = getNum('l-labor-rate');
+                var hardware = getNum('l-hardware-cost'), failurePercent = getNum('l-failure-rate'), markupPercent = getNum('l-markup'), taxPercent = getNum('l-tax-rate');
+
+                var matCost = totalArea > 0 ? (usedArea / totalArea) * sheetCost : 0;
+                var runHours = runMins / 60;
+                var energyCost = (powerWatts / 1000) * runHours * elecRate;
+                var wearCost = runHours * wearRate;
+                var laborCost = ((runMins + setupMins) / 60) * laborRate;
+                var directSubtotal = matCost + energyCost + wearCost + laborCost + hardware;
+                var riskCost = directSubtotal * (failurePercent / 100);
+                var totalShopCost = directSubtotal + riskCost;
+                var profitAmt = totalShopCost * (markupPercent / 100);
+                var subtotalBeforeTax = totalShopCost + profitAmt;
+                var taxAmt = subtotalBeforeTax * (taxPercent / 100);
+
+                updateUI(matCost, energyCost, wearCost, laborCost, hardware, directSubtotal, riskCost, totalShopCost, profitAmt, taxAmt, subtotalBeforeTax + taxAmt);
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>3D Printing & Laser Engraving Job Costing Tool</h1>
+            <p>Precise manufacturing cost estimation & quote generator.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="ad-wrap">
+            <div class="ad-lbl">Advertisement</div>
+            <div class="ad-box ad-leaderboard">
+                <span>Adsterra Leaderboard Banner (728x90)</span>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <button type="button" class="tab-btn active" id="tab-3d-btn" onclick="switchTab('3d')">3D Printing (FDM/Resin)</button>
+            <button type="button" class="tab-btn" id="tab-laser-btn" onclick="switchTab('laser')">Laser Engraving / Cutting</button>
+        </div>
+
+        <div class="app-grid">
+            <div class="main-inputs">
+                <div id="form-3d">
+                    <div class="card">
+                        <fieldset class="fieldset">
+                            <legend>1. Material Consumables</legend>
+                            <div class="form-row three-col">
+                                <div class="input-group"><label for="p-spool-cost">Spool Cost</label><div class="input-wrapper has-prefix"><span class="input-prefix">$</span><input type="number" id="p-spool-cost" value="22.00" step="0.01"></div></div>
+                                <div class="input-group"><label for="p-spool-weight">Spool Weight</label><div class="input-wrapper has-suffix"><input type="number" id="p-spool-weight" value="1000"><span class="input-suffix">g</span></div></div>
+                                <div class="input-group"><label for="p-used-weight">Print Weight</label><div class="input-wrapper has-suffix"><input type="number" id="p-used-weight" value="115"><span class="input-suffix">g</span></div></div>
+                            </div>
+                        </fieldset>
+
+                        <div class="ad-wrap">
+                            <div class="ad-lbl">Sponsored Content</div>
+                            <div class="ad-box ad-infeed">
+                                <span>Adsterra Native Ad / Banner #1</span>
+                            </div>
+                        </div>
+
+                        <fieldset class="fieldset">
+                            <legend>2. Machine & Utilities</legend>
+                            <div class="form-row three-col">
+                                <div class="input-group"><label for="p-power">Power Draw</label><div class="input-wrapper has-suffix"><input type="number" id="p-power" value="210"><span class="input-suffix">W</span></div></div>
+                                <div class="input-group"><label for="p-elec-rate">Electricity Rate</label><div class="input-wrapper has-prefix has-suffix"><span class="input-prefix">$</span><input type="number" id="p-elec-rate" value="0.16" step="0.01"><span class="input-suffix">/kWh</span></div></div>
+                                <div class="input-group"><label for="p-wear-rate">Machine Wear</label><div class="input-wrapper has-prefix has-suffix"><span class="input-prefix">$</span><input type="number" id="p-wear-rate" value="0.30" step="0.05"><span class="input-suffix">/hr</span></div></div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>3. Duration & Labor</legend>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="p-time-hours">Print Duration (Hours)</label><div class="input-wrapper has-suffix"><input type="number" id="p-time-hours" value="6"><span class="input-suffix">hrs</span></div></div>
+                                <div class="input-group"><label for="p-time-mins">Print Duration (Mins)</label><div class="input-wrapper has-suffix"><input type="number" id="p-time-mins" value="45"><span class="input-suffix">min</span></div></div>
+                            </div>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="p-labor-time">Prep/Post Labor</label><div class="input-wrapper has-suffix"><input type="number" id="p-labor-time" value="25"><span class="input-suffix">min</span></div></div>
+                                <div class="input-group"><label for="p-labor-rate">Labor Rate</label><div class="input-wrapper has-prefix has-suffix"><span class="input-prefix">$</span><input type="number" id="p-labor-rate" value="28.00" step="0.50"><span class="input-suffix">/hr</span></div></div>
+                            </div>
+                        </fieldset>
+
+                        <div class="ad-wrap">
+                            <div class="ad-lbl">Advertisement</div>
+                            <div class="ad-box ad-infeed">
+                                <span>Adsterra Native Ad / Banner #2</span>
+                            </div>
+                        </div>
+
+                        <fieldset class="fieldset">
+                            <legend>4. Hardware & Profit Margins</legend>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="p-hardware-cost">Hardware / Extras</label><div class="input-wrapper has-prefix"><span class="input-prefix">$</span><input type="number" id="p-hardware-cost" value="1.50" step="0.10"></div></div>
+                                <div class="input-group"><label for="p-failure-rate">Failure Risk Buffer</label><div class="input-wrapper has-suffix"><input type="number" id="p-failure-rate" value="10"><span class="input-suffix">%</span></div></div>
+                            </div>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="p-markup">Desired Markup</label><div class="input-wrapper has-suffix"><input type="number" id="p-markup" value="45"><span class="input-suffix">%</span></div></div>
+                                <div class="input-group"><label for="p-tax-rate">Sales Tax Rate</label><div class="input-wrapper has-suffix"><input type="number" id="p-tax-rate" value="8" step="0.1"><span class="input-suffix">%</span></div></div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div id="form-laser" class="hidden">
+                    <div class="card">
+                        <fieldset class="fieldset">
+                            <legend>1. Sheet Material Usage</legend>
+                            <div class="form-row three-col">
+                                <div class="input-group"><label for="l-sheet-cost">Full Sheet Cost</label><div class="input-wrapper has-prefix"><span class="input-prefix">$</span><input type="number" id="l-sheet-cost" value="38.00" step="0.01"></div></div>
+                                <div class="input-group"><label for="l-total-area">Total Sheet Area</label><div class="input-wrapper has-suffix"><input type="number" id="l-total-area" value="1152"><span class="input-suffix">sq in</span></div></div>
+                                <div class="input-group"><label for="l-used-area">Used Job Area</label><div class="input-wrapper has-suffix"><input type="number" id="l-used-area" value="144"><span class="input-suffix">sq in</span></div></div>
+                            </div>
+                        </fieldset>
+
+                        <div class="ad-wrap">
+                            <div class="ad-lbl">Sponsored Content</div>
+                            <div class="ad-box ad-infeed">
+                                <span>Adsterra Native Ad / Banner #1</span>
+                            </div>
+                        </div>
+
+                        <fieldset class="fieldset">
+                            <legend>2. Laser System & Utilities</legend>
+                            <div class="form-row three-col">
+                                <div class="input-group"><label for="l-power">System Draw</label><div class="input-wrapper has-suffix"><input type="number" id="l-power" value="750"><span class="input-suffix">W</span></div></div>
+                                <div class="input-group"><label for="l-elec-rate">Electricity Rate</label><div class="input-wrapper has-prefix has-suffix"><span class="input-prefix">$</span><input type="number" id="l-elec-rate" value="0.16" step="0.01"><span class="input-suffix">/kWh</span></div></div>
+                                <div class="input-group"><label for="l-wear-rate">Lens/Tube Wear</label><div class="input-wrapper has-prefix has-suffix"><span class="input-prefix">$</span><input type="number" id="l-wear-rate" value="2.50" step="0.10"><span class="input-suffix">/hr</span></div></div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend>3. Laser Run & Setup Labor</legend>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="l-run-time">Laser Cut/Engrave Time</label><div class="input-wrapper has-suffix"><input type="number" id="l-run-time" value="18"><span class="input-suffix">min</span></div></div>
+                                <div class="input-group"><label for="l-setup-time">Setup & Masking</label><div class="input-wrapper has-suffix"><input type="number" id="l-setup-time" value="15"><span class="input-suffix">min</span></div></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="input-group"><label for="l-labor-rate">Labor Hourly Rate</label><div class="input-wrapper has-prefix has-suffix"><span class="input-prefix">$</span><input type="number" id="l-labor-rate" value="32.00" step="0.50"><span class="input-suffix">/hr</span></div></div>
+                            </div>
+                        </fieldset>
+
+                        <div class="ad-wrap">
+                            <div class="ad-lbl">Advertisement</div>
+                            <div class="ad-box ad-infeed">
+                                <span>Adsterra Native Ad / Banner #2</span>
+                            </div>
+                        </div>
+
+                        <fieldset class="fieldset">
+                            <legend>4. Hardware & Margins</legend>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="l-hardware-cost">Hardware / Extras</label><div class="input-wrapper has-prefix"><span class="input-prefix">$</span><input type="number" id="l-hardware-cost" value="2.00" step="0.10"></div></div>
+                                <div class="input-group"><label for="l-failure-rate">Scrap/Failure Buffer</label><div class="input-wrapper has-suffix"><input type="number" id="l-failure-rate" value="5"><span class="input-suffix">%</span></div></div>
+                            </div>
+                            <div class="form-row two-col">
+                                <div class="input-group"><label for="l-markup">Profit Markup</label><div class="input-wrapper has-suffix"><input type="number" id="l-markup" value="50"><span class="input-suffix">%</span></div></div>
+                                <div class="input-group"><label for="l-tax-rate">Sales Tax Rate</label><div class="input-wrapper has-suffix"><input type="number" id="l-tax-rate" value="8" step="0.1"><span class="input-suffix">%</span></div></div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-sticky">
+                <div class="summary-card">
+                    <h2>Live Cost Breakdown</h2>
+                    <div class="summary-line"><span>Material Consumables:</span><span id="res-material">$0.00</span></div>
+                    <div class="summary-line"><span>Energy & Utilities:</span><span id="res-energy">$0.00</span></div>
+                    <div class="summary-line"><span>Machine Wear/Depreciation:</span><span id="res-wear">$0.00</span></div>
+                    <div class="summary-line"><span>Labor & Post-Processing:</span><span id="res-labor">$0.00</span></div>
+                    <div class="summary-line"><span>Hardware & Extras:</span><span id="res-hardware">$0.00</span></div>
+                    <div class="summary-line subtotal"><span>Direct Production Subtotal:</span><span id="res-direct-sub">$0.00</span></div>
+                    <div class="summary-line"><span>Failure Risk Contingency:</span><span id="res-risk">$0.00</span></div>
+                    <div class="summary-line"><span>Total Shop Cost:</span><span id="res-total-cost">$0.00</span></div>
+                    <div class="summary-line"><span>Net Profit Margin:</span><span id="res-profit">$0.00</span></div>
+                    <div class="summary-line"><span>Estimated Taxes:</span><span id="res-tax">$0.00</span></div>
+                    
+                    <div class="quote-total-box">
+                        <div class="label">Recommended Quote Price</div>
+                        <div class="price" id="res-final-quote">$0.00</div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="copy-btn">Copy Customer Quote</button>
+                </div>
+
+                <div class="ad-wrap">
+                    <div class="ad-lbl">Advertisement</div>
+                    <div class="ad-box ad-rectangle">
+                        <span>Adsterra Rectangle Banner (300x250)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-wrap">
+            <div class="ad-lbl">Advertisement</div>
+            <div class="ad-box ad-leaderboard">
+                <span>Adsterra Bottom Leaderboard Banner (728x90)</span>
+            </div>
+        </div>
+
+        <section class="content-section">
+            <h2>Job Costing & Pricing Methodology</h2>
+            <p>Pricing micro-manufacturing services accurately is essential for makers, service bureaus, and small businesses. Underestimating expenses like power consumption, wear, labor, and failure margins will quickly eliminate profitability.</p>
+            
+            <h3>1. Consumable Material Precision</h3>
+            <p>Calculates exact raw stock used relative to full spool or sheet costs, ensuring leftover scrap overhead is integrated into unit production pricing.</p>
+            
+            <h3>2. Machine Maintenance Allowance</h3>
+            <p>Covers hourly wear rates to build a maintenance fund for replacing nozzles, belts, LCD screens, laser tubes, and focus lenses over time.</p>
+            
+            <h3>3. Energy Utilities & Overhead</h3>
+            <p>Factors in active wattage consumption alongside local utility kilowatt-hour rates to accurately capture true running costs.</p>
+        </section>
+    </div>
+
+    <div class="ad-sticky-footer">
+        <div class="ad-lbl">Advertisement</div>
+        <div class="ad-box">
+            <span>Adsterra Sticky Anchor Banner</span>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a onclick="openModal('privacy-modal')">Privacy Policy</a>
+                <a onclick="openModal('terms-modal')">Terms of Service</a>
+                <a onclick="openModal('about-modal')">About & Contact</a>
+            </div>
+            <p>&copy; 2026 Job Costing Tool. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="privacy-modal">
+        <div class="modal-card">
+            <button class="close-btn" onclick="closeModal('privacy-modal')">&times;</button>
+            <h3>Privacy Policy</h3>
+            <p>Calculations run client-side inside your browser. We do not store or transmit sensitive job cost data to external servers.</p>
+            <p>Third-party advertising partners (such as Adsterra) may use cookies, device identifiers, or web beacons to deliver targeted promotions.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="terms-modal">
+        <div class="modal-card">
+            <button class="close-btn" onclick="closeModal('terms-modal')">&times;</button>
+            <h3>Terms of Service</h3>
+            <p>This tool provides estimates for decision-support purposes only. The developer assumes no liability for quoting inaccuracies or financial losses.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="about-modal">
+        <div class="modal-card">
+            <button class="close-btn" onclick="closeModal('about-modal')">&times;</button>
+            <h3>About & Contact</h3>
+            <p>Designed for small-scale manufacturers and makerspaces to standardize pricing models. Contact support@jobcostingtool-example.com for inquiries.</p>
+        </div>
+    </div>
+
+    <div class="cookie-banner" id="cookie-banner">
+        <p>We use cookies to personalize content and serve targeted ads. By continuing, you accept our cookie policy.</p>
+        <button class="cookie-btn" id="cookie-accept-btn">Accept</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.tagName === 'INPUT') {
+                    window.calculateCosts();
+                }
+            });
+
+            document.addEventListener('change', function(e) {
+                if (e.target && e.target.tagName === 'INPUT') {
+                    window.calculateCosts();
+                }
+            });
+
+            var copyBtn = document.getElementById('copy-btn');
+            if(copyBtn) {
+                copyBtn.addEventListener('click', function() {
+                    var text = "--- CUSTOMER QUOTE ESTIMATE ---\n" +
+                        "Service Type: " + (window.currentTab === '3d' ? '3D Printing' : 'Laser Engraving/Cutting') + "\n" +
+                        "Material: " + document.getElementById('res-material').innerText + "\n" +
+                        "Labor: " + document.getElementById('res-labor').innerText + "\n" +
+                        "Extras: " + document.getElementById('res-hardware').innerText + "\n" +
+                        "-------------------------------\n" +
+                        "TOTAL QUOTE: " + document.getElementById('res-final-quote').innerText + "\n\n" +
+                        "* Valid for 30 days.";
+                    navigator.clipboard.writeText(text).then(function() { alert('Quote copied to clipboard!'); });
+                });
+            }
+
+            var cookieBtn = document.getElementById('cookie-accept-btn');
+            if(cookieBtn) {
+                cookieBtn.addEventListener('click', function() {
+                    localStorage.setItem('cookieConsent', 'accepted');
+                    document.getElementById('cookie-banner').classList.add('hidden');
+                });
+            }
+
+            if (localStorage.getItem('cookieConsent') === 'accepted') {
+                var banner = document.getElementById('cookie-banner');
+                if(banner) banner.classList.add('hidden');
+            }
+
+            window.addEventListener('click', function(e) {
+                var modals = document.querySelectorAll('.modal-overlay');
+                for(var j=0; j<modals.length; j++){
+                    if (e.target === modals[j]) modals[j].style.display = 'none';
+                }
+            });
+
+            window.calculateCosts();
+        });
+    </script>
+</body>
+</html>
