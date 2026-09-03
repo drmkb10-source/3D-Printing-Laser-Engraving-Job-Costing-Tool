@@ -185,7 +185,9 @@
         <div class="ad-wrap">
             <div class="ad-lbl">Advertisement</div>
             <div class="ad-box ad-leaderboard">
-                <span>Adsterra Leaderboard Banner (728x90)</span>
+                <!-- Adsterra Banner 728x90: place your provider code here -->
+                <!-- Suggested ID from assets: 31062807 -->
+                <div class="adsterra-slot" data-ad-id="31062807">[Adsterra 728x90 code goes here]</div>
             </div>
         </div>
 
@@ -210,7 +212,9 @@
                         <div class="ad-wrap">
                             <div class="ad-lbl">Sponsored Content</div>
                             <div class="ad-box ad-infeed">
-                                <span>Adsterra Native Ad / Banner #1</span>
+                                <!-- Adsterra Native Banner: place your provider code here -->
+                                <!-- Suggested ID from assets: 31062806 -->
+                                <div class="adsterra-slot" data-ad-id="31062806">[Adsterra Native Banner code goes here]</div>
                             </div>
                         </div>
 
@@ -238,7 +242,9 @@
                         <div class="ad-wrap">
                             <div class="ad-lbl">Advertisement</div>
                             <div class="ad-box ad-infeed">
-                                <span>Adsterra Native Ad / Banner #2</span>
+                                <!-- Adsterra Native Banner (secondary): replace with provider code -->
+                                <!-- Suggested ID from assets: 31062806 -->
+                                <div class="adsterra-slot" data-ad-id="31062806">[Adsterra Native Banner #2 code goes here]</div>
                             </div>
                         </div>
 
@@ -270,7 +276,9 @@
                         <div class="ad-wrap">
                             <div class="ad-lbl">Sponsored Content</div>
                             <div class="ad-box ad-infeed">
-                                <span>Adsterra Native Ad / Banner #1</span>
+                                <!-- Adsterra Native Banner (laser): place your provider code here -->
+                                <!-- Suggested ID from assets: 31062806 -->
+                                <div class="adsterra-slot" data-ad-id="31062806">[Adsterra Native Banner code goes here]</div>
                             </div>
                         </div>
 
@@ -297,7 +305,9 @@
                         <div class="ad-wrap">
                             <div class="ad-lbl">Advertisement</div>
                             <div class="ad-box ad-infeed">
-                                <span>Adsterra Native Ad / Banner #2</span>
+                                <!-- Adsterra Native Banner (laser secondary): place provider code here -->
+                                <!-- Suggested ID from assets: 31062806 -->
+                                <div class="adsterra-slot" data-ad-id="31062806">[Adsterra Native Banner #2 code goes here]</div>
                             </div>
                         </div>
 
@@ -341,7 +351,9 @@
                 <div class="ad-wrap">
                     <div class="ad-lbl">Advertisement</div>
                     <div class="ad-box ad-rectangle">
-                        <span>Adsterra Rectangle Banner (300x250)</span>
+                        <!-- Adsterra Rectangle 300x250: place your provider code here -->
+                        <!-- Suggested ID from assets: 31062806 (or your rectangle zone) -->
+                        <div class="adsterra-slot" data-ad-id="31062806">[Adsterra 300x250 code goes here]</div>
                     </div>
                 </div>
             </div>
@@ -350,7 +362,9 @@
         <div class="ad-wrap">
             <div class="ad-lbl">Advertisement</div>
             <div class="ad-box ad-leaderboard">
-                <span>Adsterra Bottom Leaderboard Banner (728x90)</span>
+                <!-- Bottom Leaderboard 728x90: place your provider code here -->
+                <!-- Suggested ID from assets: 31062807 -->
+                <div class="adsterra-slot" data-ad-id="31062807">[Adsterra Bottom 728x90 code goes here]</div>
             </div>
         </div>
 
@@ -372,7 +386,9 @@
     <div class="ad-sticky-footer">
         <div class="ad-lbl">Advertisement</div>
         <div class="ad-box">
-            <span>Adsterra Sticky Anchor Banner</span>
+            <!-- Sticky Anchor / Social Bar: add Adsterra code here (social bar id suggested) -->
+            <!-- Suggested ID from assets: 31062808 (Social Bar) -->
+            <div class="adsterra-slot" data-ad-id="31062808">[Adsterra Sticky / Social Bar code goes here]</div>
         </div>
     </div>
 
@@ -469,5 +485,18 @@
             window.calculateCosts();
         });
     </script>
+    <!--
+        Adsterra integration notes:
+        - Each placeholder div with class `adsterra-slot` and `data-ad-id` is where your Adsterra ad snippet should be inserted.
+        - Suggested IDs (from your asset list):
+            * Native Banner: 31062806
+            * Banner 728x90: 31062807
+            * Social Bar: 31062808
+            * Popunder: 31062809
+            * (Optional) Account/Campaign: 6026462
+        - To integrate: replace the inner HTML of the matching `.adsterra-slot` with the exact script/iframe/code Adsterra provides for that zone.
+        - Popunder code is normally added near the end of the body (or via your Adsterra dashboard) and may require the provider's script to be included once.
+        - If you want, paste your exact Adsterra snippets here and I will insert them into the correct slots.
+    -->
 </body>
 </html>
