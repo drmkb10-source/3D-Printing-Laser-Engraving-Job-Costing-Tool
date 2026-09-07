@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Printing & Laser Engraving Job Costing Tool</title>
     
+    <!-- ADSTERRA POPUNDER -->
     <script src="https://pl31163308.profitableratecpmnetwork.com/6f/ac/4b/6fac4b573212881f9156b409531d4aa4.js"></script>
 
     <style>
@@ -78,6 +79,7 @@
 
         window.switchTab = function(tab) {
             window.currentTab = tab;
+            sessionStorage.setItem('activeTab', tab);
             var btn3d = document.getElementById('tab-3d-btn');
             var btnLaser = document.getElementById('tab-laser-btn');
             var form3d = document.getElementById('form-3d');
@@ -175,6 +177,7 @@
 </head>
 <body>
 
+    <!-- ADSTERRA SOCIAL BAR -->
     <script src="https://pl31163307.profitableratecpmnetwork.com/bb/2d/2c/bb2d2c7885ea80157bcaddec5d82adab.js"></script>
 
     <header>
@@ -185,6 +188,7 @@
     </header>
 
     <div class="container">
+        <!-- HEADER 728x90 BANNER -->
         <div class="ad-wrap">
             <div class="ad-lbl">Advertisement</div>
             <div class="ad-box ad-leaderboard">
@@ -201,6 +205,7 @@
             </div>
         </div>
 
+        <!-- Mode Toggle Tabs -->
         <div class="tab-container">
             <button type="button" class="tab-btn active" id="tab-3d-btn" onclick="switchTab('3d')">3D Printing (FDM/Resin)</button>
             <button type="button" class="tab-btn" id="tab-laser-btn" onclick="switchTab('laser')">Laser Engraving / Cutting</button>
@@ -208,6 +213,7 @@
 
         <div class="app-grid">
             <div class="main-inputs">
+                <!-- 3D PRINTING FORM -->
                 <div id="form-3d">
                     <div class="card">
                         <fieldset class="fieldset">
@@ -219,6 +225,7 @@
                             </div>
                         </fieldset>
 
+                        <!-- IN-FEED NATIVE BANNER #1 (3D) -->
                         <div class="ad-wrap">
                             <div class="ad-lbl">Sponsored Content</div>
                             <div class="ad-box ad-infeed">
@@ -262,6 +269,7 @@
                     </div>
                 </div>
 
+                <!-- LASER ENGRAVING FORM -->
                 <div id="form-laser" class="hidden">
                     <div class="card">
                         <fieldset class="fieldset">
@@ -273,6 +281,7 @@
                             </div>
                         </fieldset>
 
+                        <!-- IN-FEED NATIVE BANNER #1 (LASER) -->
                         <div class="ad-wrap">
                             <div class="ad-lbl">Sponsored Content</div>
                             <div class="ad-box ad-infeed">
@@ -316,6 +325,7 @@
                 </div>
             </div>
 
+            <!-- SIDEBAR STICKY SECTION -->
             <div class="sidebar-sticky">
                 <div class="summary-card">
                     <h2>Live Cost Breakdown</h2>
@@ -340,6 +350,7 @@
             </div>
         </div>
 
+        <!-- BOTTOM 728x90 BANNER -->
         <div class="ad-wrap">
             <div class="ad-lbl">Advertisement</div>
             <div class="ad-box ad-leaderboard">
@@ -382,6 +393,7 @@
         </div>
     </footer>
 
+    <!-- MODALS -->
     <div class="modal-overlay" id="privacy-modal">
         <div class="modal-card">
             <button class="close-btn" onclick="closeModal('privacy-modal')">&times;</button>
@@ -403,7 +415,7 @@
         <div class="modal-card">
             <button class="close-btn" onclick="closeModal('about-modal')">&times;</button>
             <h3>About & Contact</h3>
-            <p>Designed for small-scale manufacturers and makerspaces to standardize pricing models. Contact support at drmkb10@gmail.com for inquiries.</p>
+            <p>Designed for small-scale manufacturers and makerspaces to standardize pricing models. Contact drmkb10@gmail.com for inquiries.</p>
         </div>
     </div>
 
@@ -414,17 +426,33 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('input', function(e) {
-                if (e.target && e.target.tagName === 'INPUT') {
-                    window.calculateCosts();
+            // Restore saved inputs from sessionStorage
+            var inputs = document.querySelectorAll('input[id]');
+            inputs.forEach(function(input) {
+                var savedVal = sessionStorage.getItem(input.id);
+                if (savedVal !== null) {
+                    input.value = savedVal;
                 }
             });
 
-            document.addEventListener('change', function(e) {
-                if (e.target && e.target.tagName === 'INPUT') {
+            // Save values to sessionStorage on change/input and trigger re-calculation
+            function handleInput(e) {
+                if (e.target && e.target.tagName === 'INPUT' && e.target.id) {
+                    sessionStorage.setItem(e.target.id, e.target.value);
                     window.calculateCosts();
                 }
-            });
+            }
+
+            document.addEventListener('input', handleInput);
+            document.addEventListener('change', handleInput);
+
+            // Restore active tab from sessionStorage
+            var savedTab = sessionStorage.getItem('activeTab');
+            if (savedTab) {
+                window.switchTab(savedTab);
+            } else {
+                window.calculateCosts();
+            }
 
             var copyBtn = document.getElementById('copy-btn');
             if(copyBtn) {
@@ -444,12 +472,12 @@
             var cookieBtn = document.getElementById('cookie-accept-btn');
             if(cookieBtn) {
                 cookieBtn.addEventListener('click', function() {
-                    localStorage.setItem('cookieConsent', 'accepted');
+                    sessionStorage.setItem('cookieConsent', 'accepted');
                     document.getElementById('cookie-banner').classList.add('hidden');
                 });
             }
 
-            if (localStorage.getItem('cookieConsent') === 'accepted') {
+            if (sessionStorage.getItem('cookieConsent') === 'accepted') {
                 var banner = document.getElementById('cookie-banner');
                 if(banner) banner.classList.add('hidden');
             }
@@ -460,8 +488,6 @@
                     if (e.target === modals[j]) modals[j].style.display = 'none';
                 }
             });
-
-            window.calculateCosts();
         });
     </script>
 </body>
